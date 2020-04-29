@@ -48,9 +48,9 @@ def MST(gt, model) :
 	if len(gt) == 1:
 		print("Error : Check the ground labels")
 	for i in range(0,len(gt)-3) :
-		sum+= math.sqrt((float(gt[i]) - float(model[i]))**2 + (float(gt[i+1]) - float(model[i+1]))**2) + math.sqrt((float(gt[i+2]) - float(model[i+2]))**2 + (float(gt[i+3]) - float(model[i+3]))**2)
+		sum = ((math.sqrt((float(gt[i]) - float(model[i]))**2 + (float(gt[i+1]) - float(model[i+1]))**2) + math.sqrt((float(gt[i+2]) - float(model[i+2]))**2 + (float(gt[i+3]) - float(model[i+3]))**2))/2)**2
 	if len(gt)!=0 :
-		sum = sum/(len(gt)/4)	
+		sum = math.sqrt(sum/(len(gt)/4))	
 	else :
 		print("Not valid input")
 	return sum
