@@ -3,6 +3,10 @@ import math
 import argparse
 import cv2 as cv
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-i', '--image-path', type=str, help='The path to the image file')
+FLAGS = parser.parse_args()
+
 def readFile(model) :
 		content = ""
 		cont = []
@@ -36,10 +40,12 @@ def printGroundTruth(mstMatrix,gt) :
 		sum.append(element)
 	for i in range(0, len(sum)) :
 		print("The MST for the model", dict[i]," is = ", sum[i])
+		save_results("The MST for the model" + str(dict[i]) + " is = " + str(sum[i])+"\n", FLAGS.image_path.split('.')[0])
 	for i in sum :
 		print("The minimum amongst all is ",min(sum),"\n")
 		if(sum.index(min(sum)) < len(dict)) :
 			print("The model accuractely detecting is ", dict[sum.index(min(sum))])
+			save_results("The model accuractely detecting is " + str(dict[sum.index(min(sum))])+"\n", FLAGS.image_path.split('.')[0])
 			break
 		else :
 			print("Error: Wrong method")
@@ -57,10 +63,13 @@ def MST(gt, model) :
 		print("Not valid input")
 	return sum
 
+def save_results(result, filename):
+        f = open(str(filename)+"_Output.txt", "a")
+        f.write(result)
+        f.close()
+        return
+
 def main() :
-        parser = argparse.ArgumentParser()
-        parser.add_argument('-i', '--image-path', type=str, help='The path to the image file')
-        FLAGS = parser.parse_args()
         if FLAGS.image_path:
                 try:
                         img = cv.imread(FLAGS.image_path)
@@ -94,27 +103,32 @@ def main() :
                 enMax.append(float(max(yolo3Content[i],ssdContent[i],erroryoloContent[i])))
         print("The prediction of the MAX model : ")
         matrix = printMatrix(enMax)
+        save_results(str(enMax)+"\n", FLAGS.image_path.split('.')[0])
         print(matrix,"\n")
         for i in range(0,len(yolo3Content)) :
                 enMin.append(float(min(yolo3Content[i],ssdContent[i],erroryoloContent[i])))
         print("The prediction of the MIN model : ")
         matrix = printMatrix(enMin)
+        save_results(str(enMin)+"\n", FLAGS.image_path.split('.')[0])
         print(matrix,"\n")
         for i in range(0,len(yolo3Content)) :
                 enAvg.append(( float(yolo3Content[i])+ float(ssdContent[i]) + float(erroryoloContent[i]))/3 )
         print("The prediction of the AVG model : ")
         matrix = printMatrix(enAvg)
+        save_results(str(enAvg)+"\n", FLAGS.image_path.split('.')[0])
         print(matrix,"\n")
         for i in range(0,len(enMax)) :
                 enAvg1.append( (float(enMax[i])+ float(enMin[i]))/2)
         print("The prediction of the AVG(MAX,MIN) model : ")
         matrix = printMatrix(enAvg1)
+        save_results(str(enAvg1)+"\n", FLAGS.image_path.split('.')[0])
         print(matrix,"\n")
         for i in range(0,len(enMax)) :
                 t = [yolo3Content[i],ssdContent[i],erroryoloContent[i]]	
                 enMed.append(float(median(t)))
         print("The prediction of the MEDIAN model : ")
         matrix = printMatrix(enMed)
+        save_results(str(enMed)+"\n", FLAGS.image_path.split('.')[0])
         print(matrix,"\n")
         mstMatrix = [yolo3Content, ssdContent, erroryoloContent, enMax, enMin, enAvg, enAvg1, enMed]
         minimumModel = printGroundTruth(mstMatrix,gtContent)
