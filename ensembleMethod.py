@@ -1,5 +1,7 @@
 from statistics import median
 import math
+import argparse
+import cv2 as cv
 
 def readFile(model) :
 		content = ""
@@ -56,58 +58,67 @@ def MST(gt, model) :
 	return sum
 
 def main() :
-	ssdFile = "ssd.txt"
-	yolo3File = "yolo3.txt"
-	erroryoloFile = "erroryolo.txt"
-	gtFile = "gt.txt"
-	ssd = open(ssdFile, "r")
-	yolo3 = open(yolo3File,"r")
-	erroryolo = open(erroryoloFile,"r")
-	gt = open(gtFile,"r")
-	yolo3Content = []
-	ssdContent = []
-	erroryoloContent = []
-	gtContent = []
-	t = []
-	matrix = []
-	enMed = []
-	enMax = []
-	enMin = []
-	enAvg = []
-	enAvg1 = []
-	yolo3Content = readFile(yolo3)
-	ssdContent = readFile(ssd)
-	erroryoloContent = readFile(erroryolo)
-	gtContent = readFile(gt)
-	for i in range(0,len(yolo3Content)) :
-			enMax.append(float(max(yolo3Content[i],ssdContent[i],erroryoloContent[i])))
-	print("The prediction of the MAX model : ")
-	matrix = printMatrix(enMax)
-	print(matrix,"\n")
-	for i in range(0,len(yolo3Content)) :
-			enMin.append(float(min(yolo3Content[i],ssdContent[i],erroryoloContent[i])))
-	print("The prediction of the MIN model : ")
-	matrix = printMatrix(enMin)
-	print(matrix,"\n")
-	for i in range(0,len(yolo3Content)) :
-			enAvg.append(( float(yolo3Content[i])+ float(ssdContent[i]) + float(erroryoloContent[i]))/3 )
-	print("The prediction of the AVG model : ")
-	matrix = printMatrix(enAvg)
-	print(matrix,"\n")
-	for i in range(0,len(enMax)) :
-			enAvg1.append( (float(enMax[i])+ float(enMin[i]))/2)
-	print("The prediction of the AVG(MAX,MIN) model : ")
-	matrix = printMatrix(enAvg1)
-	print(matrix,"\n")
-	for i in range(0,len(enMax)) :
-			t = [yolo3Content[i],ssdContent[i],erroryoloContent[i]]	
-			enMed.append(float(median(t)))
-	print("The prediction of the MEDIAN model : ")
-	matrix = printMatrix(enMed)
-	print(matrix,"\n")
-	mstMatrix = [yolo3Content, ssdContent, erroryoloContent, enMax, enMin, enAvg, enAvg1, enMed]
-	minimumModel = printGroundTruth(mstMatrix,gtContent)
-	print("The Optimized model is", minimumModel)
+        parser = argparse.ArgumentParser()
+        parser.add_argument('-i', '--image-path', type=str, help='The path to the image file')
+        FLAGS = parser.parse_args()
+        if FLAGS.image_path:
+                try:
+                        img = cv.imread(FLAGS.image_path)
+                        height, width = img.shape[:2]
+                except:
+                        raise 'Image cannot be loaded!\n\Please check the path provided!'
+        ssdFile = str(FLAGS.image_path.split('.')[0])+"_ssd.txt"
+        yolo3File = str(FLAGS.image_path.split('.')[0])+"_yolo3.txt"
+        erroryoloFile = str(FLAGS.image_path.split('.')[0])+"_erroryolo.txt"
+        gtFile = str(FLAGS.image_path.split('.')[0])+"_gt.txt"
+        ssd = open(ssdFile, "r")
+        yolo3 = open(yolo3File,"r")
+        erroryolo = open(erroryoloFile,"r")
+        gt = open(gtFile,"r")
+        yolo3Content = []
+        ssdContent = []
+        erroryoloContent = []
+        gtContent = []
+        t = []
+        matrix = []
+        enMed = []
+        enMax = []
+        enMin = []
+        enAvg = []
+        enAvg1 = []
+        yolo3Content = readFile(yolo3)
+        ssdContent = readFile(ssd)
+        erroryoloContent = readFile(erroryolo)
+        gtContent = readFile(gt)
+        for i in range(0,len(yolo3Content)) :
+                enMax.append(float(max(yolo3Content[i],ssdContent[i],erroryoloContent[i])))
+        print("The prediction of the MAX model : ")
+        matrix = printMatrix(enMax)
+        print(matrix,"\n")
+        for i in range(0,len(yolo3Content)) :
+                enMin.append(float(min(yolo3Content[i],ssdContent[i],erroryoloContent[i])))
+        print("The prediction of the MIN model : ")
+        matrix = printMatrix(enMin)
+        print(matrix,"\n")
+        for i in range(0,len(yolo3Content)) :
+                enAvg.append(( float(yolo3Content[i])+ float(ssdContent[i]) + float(erroryoloContent[i]))/3 )
+        print("The prediction of the AVG model : ")
+        matrix = printMatrix(enAvg)
+        print(matrix,"\n")
+        for i in range(0,len(enMax)) :
+                enAvg1.append( (float(enMax[i])+ float(enMin[i]))/2)
+        print("The prediction of the AVG(MAX,MIN) model : ")
+        matrix = printMatrix(enAvg1)
+        print(matrix,"\n")
+        for i in range(0,len(enMax)) :
+                t = [yolo3Content[i],ssdContent[i],erroryoloContent[i]]	
+                enMed.append(float(median(t)))
+        print("The prediction of the MEDIAN model : ")
+        matrix = printMatrix(enMed)
+        print(matrix,"\n")
+        mstMatrix = [yolo3Content, ssdContent, erroryoloContent, enMax, enMin, enAvg, enAvg1, enMed]
+        minimumModel = printGroundTruth(mstMatrix,gtContent)
+        print("The Optimized model is", minimumModel)
 
 if __name__ == "__main__":
     main()
