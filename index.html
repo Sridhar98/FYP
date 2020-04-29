@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8"/>
+<link rel="icon" href="logo.ico"/>
+<link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://fonts.googleapis.com/css?family=Baloo+Da+2&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Acme&display=swap" rel="stylesheet">
+<head>
+	<title>FastTrack</title>
+</head>
+<body bgcolor= #FFD700>
+	<div class="div">
+		<section class="leftside">
+			<img src="logo.jpg" class="youtube"><br>
+			<h1 class="heading">FastTrack - Two-Stage Multi Target Tracking</h1>
+			<p class="intro">
+				FastTrack realizes the high stakes of life and property involved in the real-life application of object tracking. We at FastTrack provide the end-user with a faster, highly efficient and accurate detection and tracking system.
+			</p>
+			<p class="intro1">
+				Made by Shubhendra Pal Singhal, Sridhar Ragupathi, Swetha Sivakumar.
+			</p>
+		</section>
+		<section class="rightside">
+			<h1 class="heading1">FastTrack in Real-Time Scenario</h1>
+			<p class="intro">
+				FastTrack aims at speed-enhancement to reduce the number of road-fatalities in autonomous driving vehicles, accelerate the process of tracking criminals. An enclosed small demo of how fast and accurate FastTrack is. 
+			</p>
+			<img src="logo.gif" class="gifs"><br>		
+		</section>
+	</div>
+	<i class="fa fa-arrow-down" aria-hidden="true" id = "scb" onClick="document.getElementById('div').scrollIntoView({ behavior: 'smooth', block: 'end' });"/></i> 
+	<div class="div" id = "div">
+		<section class="videos">
+			<video src="video.mp4" controls class="whole"></video>
+		</section>
+	</div>
+</body>
+
+<style type="text/css">
+	.div{
+		background-attachment: fixed;
+  		background-position: center;
+	}
+	.div1 {
+		margin-top: 12%;
+		margin-left: 40%;
+		font-family: 'Baloo Da 2', cursive;
+	}
+	.leftside {
+		background: black;
+		float: left;
+		color: white;
+		width: 50%;
+		height: 200%;
+		margin: 1%;
+		margin-top: 2%;
+		margin-bottom: 5%;
+	}
+	.rightside {
+		float: right;
+		margin-top: 2%;
+		margin-right: 4%;
+		width: 40%;
+		height: 200%;
+		background: #add8e6;
+		border-color: black;
+		margin-bottom: 5%;
+		
+	}
+	.youtube {
+		width: 20%;
+		height: 20%;
+		padding: 1%;
+		margin-top: 3%;
+		margin-left: 3%;
+	}
+	.intro {
+		margin: 5%;
+		padding-top: 2%;
+		overflow: hidden;
+		padding-bottom: none;
+		font-family: 'Baloo Da 2', cursive;
+
+	}
+	.intro1 {
+		margin: 5%;
+		padding-top: 10%;
+		overflow: hidden;
+		padding-bottom: none;
+		font-size: 5%;
+		text-align: center;
+		font-family: 'Baloo Da 2', cursive;
+
+	}
+	.heading {
+		font-family: 'Acme', sans-serif;
+		width: 80%;
+		height: 30%;
+		padding: 1%;
+		margin-top: 3%;
+		margin-left: 3%;
+	}
+	.heading1 {
+		font-family: 'Acme', sans-serif;
+		width: 100%;
+		height: 30%;
+		padding: 1%;
+		text-align: center;
+		margin-top: 3%;
+		margin-left: 3%;
+	}
+	.button {
+		font-family: 'Baloo Da 2', cursive;
+		color: black;
+		background: #ffcccb;
+	}
+	.gifs {
+		width: 90%;
+		padding: 1%;
+		margin-left: 3%;
+	}
+	.videos {
+
+		width: 100%;
+	}
+	.whole {
+		width: 100%;
+		height: 100%;
+		margin-top: 2%;
+	}
+	#scb {
+		margin-top: 0%;
+		margin-left: 90%;
+		border-radius: 50%;
+		background-color: white;
+		height: 5%;
+		cursor: pointer;
+		padding: 2%;
+	}
+</style>
+</html>
