@@ -5,6 +5,7 @@ import cv2 as cv
 
 input_path = 'inputs/'
 output_path = 'results/'
+draw_path = 'results/'
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', '--image-path', type=str, help='The path to the image file')
@@ -52,6 +53,8 @@ def printGroundTruth(mstMatrix,gt) :
 			break
 		else :
 			print("Error: Wrong method")
+	print("The co-ordinates for the minimum model is", mstMatrix[sum.index(min(sum))])
+	save_results_draw(mstMatrix[sum.index(min(sum))] + "\n", output_path+FLAGS.image_path.split('.')[0])
 	return dict[sum.index(min(sum))]
 	
 def MST(gt, model) :
@@ -68,6 +71,11 @@ def MST(gt, model) :
 
 def save_results(result, filename):
         f = open(str(filename)+"_Output.txt", "a")
+        f.write(result)
+        f.close()
+        return
+def save_results_draw(result, filename):
+        f = open(str(filename)+"_drawbb.txt", "a")
         f.write(result)
         f.close()
         return
