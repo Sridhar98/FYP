@@ -2,11 +2,6 @@ import cv2 as cv
 import random
 import argparse
 
-input_path = 'inputs/'
-
-parser = argparse.ArgumentParser()
-parser.add_argument('-i', '--image-path', type=str, help='The path to the image file')
-FLAGS = parser.parse_args()
 
 def plot_boxes_cv2(img_in_path,boxes, savename=None, class_names=None, color=None):
     
@@ -18,7 +13,7 @@ def plot_boxes_cv2(img_in_path,boxes, savename=None, class_names=None, color=Non
         r = int(random.uniform(0,255))
         g = int(random.uniform(0,255))
         b = int(random.uniform(0,255))
-        img = cv2.rectangle(img, (box[0], box[1]), (box[2], box[3]), (r,g,b), 1)
+        img = cv2.rectangle(img, (box[0], box[1]), (box[2], box[3]), (r,g,b), 3)
 
     if savename:
         
@@ -27,7 +22,7 @@ def plot_boxes_cv2(img_in_path,boxes, savename=None, class_names=None, color=Non
         		
 	
 def draw_bounding_box():
-		bbfile = open(input_path+str(FLAGS.image_path),"r")
+		bbfile = open("results/drawbb.txt","r")
 		c = 0
 		for line in bbfile:
 			print('line: ',len(line))

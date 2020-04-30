@@ -75,7 +75,7 @@ def save_results(result, filename):
         f.close()
         return
 def save_results_draw(result, filename):
-        f = open(draw_path+"drawbb.txt", "a")
+        f = open(draw_path+"drawbb.txt", "w")
         f.write(result)
         f.close()
         return
