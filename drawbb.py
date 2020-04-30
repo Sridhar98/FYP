@@ -1,5 +1,12 @@
 import cv2 as cv
 import random
+import argparse
+
+input_path = 'inputs/'
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-i', '--image-path', type=str, help='The path to the image file')
+FLAGS = parser.parse_args()
 
 def plot_boxes_cv2(img_in_path,boxes, savename=None, class_names=None, color=None):
     
@@ -19,12 +26,8 @@ def plot_boxes_cv2(img_in_path,boxes, savename=None, class_names=None, color=Non
         cv2.imwrite(savename, img)
         		
 	
-	
-	
-
-
 def draw_bounding_box():
-		bbfile = open("results/drawbb.txt","r")
+		bbfile = open(input_path+str(FLAGS.image_path),"r")
 		c = 0
 		for line in bbfile:
 			print('line: ',len(line))
