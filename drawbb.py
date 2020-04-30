@@ -1,10 +1,10 @@
 import cv2 as cv
 import random
 
-def plot_boxes_cv2(img, boxes, savename=None, class_names=None, color=None):
+def plot_boxes_cv2(img_in_path,boxes, savename=None, class_names=None, color=None):
     
     import cv2
-    
+    img = cv2.imread(img_in_path)
     
     for box in boxes:
         
@@ -23,73 +23,43 @@ def plot_boxes_cv2(img, boxes, savename=None, class_names=None, color=None):
 	
 
 
-def draw_bounding_box(img,path,minModel):
-	
-	dict = {"YOLOv3":"_yolo3.txt","SSD":"_ssd.txt","ERROR_OFFSET_YOLOv3":"_erroryolo.txt","MAX":"1","MIN":"2","AVG":"3","AVG(MAX,MIN)":"4","MEDIAN":"5","YOLOv4":"_erroryolo.txt"}
-	val = dict[minModel]
-	
-	if len(val) > 1:
-		
-		coordinate_file_path = path.split('.')[0]+val
-		coord_file = open(coordinate_file_path, "r")
-		object_diag_list = []
-		object_coord_list = []
-		
-		for line in coord_file:
-			
-			l = [int(s) for s in line.split('\t')]
-			
-			for coord in l:
-				
-				object_coord_list.append(coord)
-			
-			object_diag_list.append(object_coord_list)
-			object_coord_list = []
-			
-		plot_boxes_cv2(img,object_diag_list,savename=path.split('.')[0]+"_output.jpg")
-
-
-	else:
-		
-		coordinate_file_path = path.split('.')[0]+"_Output.txt"
-		coord_file = open(coordinate_file_path, "r")
-		coord_file_list = []
-		object_diag_list = []
-		
-		for line in coord_file:
-			
-			coord_file_list.append(line)
-		
-		object_diag_list = coord_file_list[int(val)-1]
+def draw_bounding_box():
+		bbfile = open("results/drawbb.txt","r")
 		c = 0
-		object_coord_list = []
-		object_list = []
-		
-		for s in object_diag_list.split(','):
-			
-			if s[0] == "[":
-				
-				object_list.append(int(float(s[1:])))
-			
-			elif s[-1] == "\n":
-				
-				object_list.append(int(float(s[:-2])))
-			
-			else:
-				
-				object_list.append(int(float(s)))
-				
-		obj_list = []		
-		
-		for coord in object_list:
-			
-			object_coord_list.append(coord)
+		for line in bbfile:
+			print('line: ',len(line))
+			if c == 0:
+				coord_string = line
+				line = ""
+			elif c == 1:
+				image_in_path = line.split('[')[0]
+				line = ""
 			c += 1
-			
-			if c == 4:
+			if c == 2:
+				break
 				
-				obj_list.append(object_coord_list)
-				object_coord_list = []
-				c = 0
 		
-		plot_boxes_cv2(img,obj_list,savename="output.jpg")
+		coord_string = coord_string.split('[')[-1]
+		coord_string = coord_string.split(']')[0]
+		
+		object_list = []
+		object_coord_list = []
+		
+		c = 0
+		for coord in coord_string.split(','):
+			object_coord_list.append(int(float(coord)))
+			c += 1
+			if c % 4 == 0:
+				object_list.append(object_coord_list)
+				object_coord_list = []
+				
+				
+		image_name_ext = image_in_path.split('/')[-1]
+		image_name = image_name_ext.split('.')[0]
+		image_format = image_name_ext.split('.')[1]
+				
+		plot_boxes_cv2(image_in_path,object_list,savename="outputs/"+image_name+"_out."+image_format)
+		
+		
+if __name__ == "__main__":
+	draw_bounding_box()
