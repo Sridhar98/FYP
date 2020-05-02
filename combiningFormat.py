@@ -39,72 +39,101 @@ def compare(array,best,point) :
 	return point
 
 
-def printTwo(arrayOne, arrayTwo) :
-	print("\n" , arrayOne , "\n" , arrayTwo)
+def printTwo(arrayOne, arrayTwo, arrayThree) :
+	print("\n" , arrayOne , "\n" , arrayTwo , "\n" , arrayThree)
 
 def sort(array) :
 	if len(array) > 1 :
 		array = sorted(array, key=lambda x:x[0])
 	return array
 
+def removeLines(minLen,array,best) :
+	for x in range(0,len(best)) :
+		if(len(array) == len(best)) :
+			break
+		index = compare(array,best,x)
+		if index == -1 :
+			break;
+		elif x!=index :
+			for i in range(x,index) :
+				array.pop(i)
+	if(len(array)!=len(best)) :
+		while(len(array)!=len(best)) :
+			array.pop(len(array)-1)
+	return array
+
+def format(array,height,width) :
+	
+	for i in range(0, len(array)) :
+		array[i][0] = array[i][0] * width
+		array[i][1] = array[i][1] * height
+		array[i][2] = array[i][2] * height
+		array[i][3] = array[i][3] * width
+		array[i][1], array[i][2] = array[i][2], array[i][1]
+	return array
+
 def main() :
+	#reading image
 	img = cv.imread("input2.jpeg")
+	height, width = img.shape[:2]
+	#reading from text files
 	ssdFile = "ssd.txt"
 	yolo3File = "yolo3.txt"
+	yolo4File = "yolo4.txt"
+	gtFile = "gt.txt"
 	ssd = open(ssdFile, "r")
 	yolo3 = open(yolo3File,"r")
+	yolo4 = open(yolo4File, "r")
+	gt = open(gtFile, "r")
 	yolo3Content = readFile(yolo3)
 	ssdContent = readFile(ssd)
+	yolo4Content = readFile(yolo4)
+	gtContent = readFile(gt)
+	#removing empty array elements like [[],[]]
 	trailingZeros(yolo3Content)
 	trailingZeros(ssdContent)
+	trailingZeros(yolo4Content)
+	trailingZeros(gtContent)
+	# sorting the output
 	yolo3Content = sort(yolo3Content)
 	ssdContent = sort(ssdContent)
-	printTwo(yolo3Content,ssdContent)
-	minLen = min(len(yolo3Content),len(ssdContent))
-	if(minLen == len(ssdContent)) :
-		for x in range(0,len(ssdContent)) :
-			if(len(yolo3Content) == len(ssdContent)) :
-				break
-			index = compare(yolo3Content,ssdContent,x)
-			if index == -1 :
-				break;
-			elif x!=index :
-				for i in range(x,index) :
-					yolo3Content.pop(i)
-	if(len(yolo3Content)!=len(ssdContent)) :
-		while(len(yolo3Content)!=len(ssdContent)) :
-			yolo3Content.pop(len(yolo3Content)-1)
-	elif(minLen == len(yolo3Content)) :
-		for x in range(0,len(yolo3Content)) :
-			if(len(yolo3Content) == len(ssdContent)) :
-				break
-			index = compare(ssdContent,yolo3Content,x)
-			if index == -1 :
-				break;
-			elif x!=index :
-				for i in range(x,index) :
-					ssdContent.pop(i)
-	if(len(yolo3Content)!=len(ssdContent)) :
-		while(len(yolo3Content)!=len(ssdContent)) :
-			ssdContent.pop(len(ssdContent)-1)
+	yolo4Content = sort(yolo4Content)
+	gtContent = sort(gtContent)
+	printTwo(yolo3Content,ssdContent,yolo4Content)
+	minLen = min(min(len(yolo3Content),len(ssdContent)),len(yolo4Content))
+	
+	#Removing the unnecessary lines
+
+	if minLen == len(ssdContent) :
+		yolo3Content = removeLines(minLen, yolo3Content, ssdContent)
+		yolo4Content = removeLines(minLen, yolo4Content, ssdContent)
+	elif minLen == len(yolo4Content) :
+		ssdContent = removeLines(minLen, ssdContent, yolo4Content)
+		yolo3Content = removeLines(minLen, yolo3Content, yolo4Content)
+	else :
+		yolo4Content = removeLines(minLen, yolo4Content, yolo3Content)
+		ssdContent = removeLines(minLen, ssdContent, yolo3Content)
+	
+	print("\n", gtContent, "\n")
+	#change to (x,y) and (x1,y1) - diagonal co-ordinates
+	
+	gtContent = format(gtContent,height,width)
+	gtContent = removeLines(minLen, gtContent, ssdContent)
+	
 	print(len(yolo3Content))
 	print(len(ssdContent))
+	print(len(yolo4Content))
 	f = open("drawbb.txt","w")
 	f.write(str(yolo3Content))
 	f.write(str('input2.jpeg'))
 	for i in range(0, len(yolo3Content)) :
-		r = int(random.uniform(0,255))
-		g = int(random.uniform(0,255))
-		b = int(random.uniform(0,255))
-		img = cv.rectangle(img,(int(yolo3Content[i][0]), int(yolo3Content[i][1])), (int(yolo3Content[i][2]), int(yolo3Content[i][3])), (r,g,b), 3)
+		#cv follows (b,g,r)
+		img = cv.rectangle(img,(int(yolo3Content[i][0]), int(yolo3Content[i][1])), (int(yolo3Content[i][2]), int(yolo3Content[i][3])), (255,255,255), 3)
+		img = cv.rectangle(img,(int(ssdContent[i][0]), int(ssdContent[i][1])), (int(ssdContent[i][2]), int(ssdContent[i][3])), (255,0,0), 3)
+		img = cv.rectangle(img,(int(yolo4Content[i][0]), int(yolo4Content[i][1])), (int(yolo4Content[i][2]), int(yolo4Content[i][3])), (0,255,0), 3)
+		img = cv.rectangle(img,(int(gtContent[i][0]), int(gtContent[i][1])), (int(gtContent[i][2]), int(gtContent[i][3])), (0,0,255), 3)
 		cv.imwrite("output.jpg",img)
 	img = cv.imread("input2.jpeg")
-	for i in range(0, len(ssdContent)) :
-		r = int(random.uniform(0,255))
-		g = int(random.uniform(0,255))
-		b = int(random.uniform(0,255))
-		img = cv.rectangle(img,(int(ssdContent[i][0]), int(ssdContent[i][1])), (int(ssdContent[i][2]), int(ssdContent[i][3])), (r,g,b), 3)
-		cv.imwrite("output1.jpg",img)
 
 if __name__ == "__main__":
     main()
