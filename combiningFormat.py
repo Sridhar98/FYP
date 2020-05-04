@@ -1,6 +1,12 @@
 import sys
 import cv2 as cv
 import random
+import argparse
+import os
+
+parser = argparse.ArgumentParser(description='Taking image file')
+parser.add_argument('--path', type=str,help='PATH')
+arg = parser.parse_args()
 
 def readFile(model) :
 		content = ""
@@ -21,7 +27,7 @@ def readFile(model) :
 		return cont
 
 def trailingZeros(array) :
-	if(array[len(array)-1] == []) :
+	if array[len(array)-1] == [] :
 		array.pop(len(array)-1)
 	return array
 
@@ -72,15 +78,27 @@ def format(array,height,width) :
 		array[i][1], array[i][2] = array[i][2], array[i][1]
 	return array
 
+def writeFile(array,file) :
+	for i in range(0,len(array)) :
+		file.write("\n")
+		for j in range(0,4) :
+			file.write(str(array[i][j]))
+			if j<=2 :
+				file.write("\t")
+	file.write("\n")
+
+input_path = "/inputs/"
+output_path = "/outputs/"
+
 def main() :
 	#reading image
-	img = cv.imread("input2.jpeg")
-	height, width = img.shape[:2]
+	print(os.getcwd() + input_path + arg.path)
+	img = cv.imread(os.getcwd() + input_path + arg.path)
 	#reading from text files
-	ssdFile = "ssd.txt"
-	yolo3File = "yolo3.txt"
-	yolo4File = "yolo4.txt"
-	gtFile = "gt.txt"
+	ssdFile = os.getcwd() + str('/'+arg.path.split('.')[0]+"_ssd.txt")
+	yolo3File = os.getcwd() + str('/'+arg.path.split('.')[0]+"_yolo3.txt")
+	yolo4File = os.getcwd() + str('/'+arg.path.split('.')[0]+"_yolo4.txt")
+	gtFile = os.getcwd() + str('/'+arg.path.split('.')[0]+"_gt.txt")
 	ssd = open(ssdFile, "r")
 	yolo3 = open(yolo3File,"r")
 	yolo4 = open(yolo4File, "r")
@@ -90,10 +108,11 @@ def main() :
 	yolo4Content = readFile(yolo4)
 	gtContent = readFile(gt)
 	#removing empty array elements like [[],[]]
-	trailingZeros(yolo3Content)
-	trailingZeros(ssdContent)
-	trailingZeros(yolo4Content)
-	trailingZeros(gtContent)
+	print(yolo3Content)
+	yolo3Content = trailingZeros(yolo3Content)
+	ssdContent = trailingZeros(ssdContent)
+	yolo4C = trailingZeros(yolo4Content)
+	gtContent = trailingZeros(gtContent)
 	# sorting the output
 	yolo3Content = sort(yolo3Content)
 	ssdContent = sort(ssdContent)
@@ -117,23 +136,25 @@ def main() :
 	print("\n", gtContent, "\n")
 	#change to (x,y) and (x1,y1) - diagonal co-ordinates
 	
-	gtContent = format(gtContent,height,width)
+	#gtContent = format(gtContent,height,width)
 	gtContent = removeLines(minLen, gtContent, ssdContent)
-	
-	print(len(yolo3Content))
-	print(len(ssdContent))
-	print(len(yolo4Content))
-	f = open("drawbb.txt","w")
-	f.write(str(yolo3Content))
-	f.write(str('input2.jpeg'))
 	for i in range(0, len(yolo3Content)) :
 		#cv follows (b,g,r)
 		img = cv.rectangle(img,(int(yolo3Content[i][0]), int(yolo3Content[i][1])), (int(yolo3Content[i][2]), int(yolo3Content[i][3])), (255,255,255), 3)
 		img = cv.rectangle(img,(int(ssdContent[i][0]), int(ssdContent[i][1])), (int(ssdContent[i][2]), int(ssdContent[i][3])), (255,0,0), 3)
 		img = cv.rectangle(img,(int(yolo4Content[i][0]), int(yolo4Content[i][1])), (int(yolo4Content[i][2]), int(yolo4Content[i][3])), (0,255,0), 3)
 		img = cv.rectangle(img,(int(gtContent[i][0]), int(gtContent[i][1])), (int(gtContent[i][2]), int(gtContent[i][3])), (0,0,255), 3)
-		cv.imwrite("output.jpg",img)
-	img = cv.imread("input2.jpeg")
+		cv.imwrite(str(os.getcwd() + output_path + "output_" + (arg.path.split("_")[1]).split(".")[0] +".jpg") ,img)
+	#Writing co-ordinates in the file
+	open(ssdFile, "w").close()
+	ssd = open(ssdFile, "w")
+	yolo3 = open(yolo3File,"w")
+	yolo4 = open(yolo4File, "w")
+	gt = open(gtFile, "w")
+	writeFile(ssdContent, ssd)
+	writeFile(yolo4Content, yolo4)
+	writeFile(yolo3Content, yolo3)
+	writeFile(gtContent, gt)
 
 if __name__ == "__main__":
     main()
