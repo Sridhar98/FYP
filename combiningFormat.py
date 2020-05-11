@@ -135,17 +135,18 @@ def main() :
 	
 	print("\n", gtContent, "\n")
 	#change to (x,y) and (x1,y1) - diagonal co-ordinates
-	
+	printTwo(yolo3Content,ssdContent,yolo4Content)
 	#gtContent = format(gtContent,height,width)
 	gtContent = removeLines(minLen, gtContent, ssdContent)
-	for i in range(0, len(yolo3Content)) :
+	#for i in range(0, len(yolo3Content)) :
 		#cv follows (b,g,r)
-		img = cv.rectangle(img,(int(yolo3Content[i][0]), int(yolo3Content[i][1])), (int(yolo3Content[i][2]), int(yolo3Content[i][3])), (255,255,255), 3)
-		img = cv.rectangle(img,(int(ssdContent[i][0]), int(ssdContent[i][1])), (int(ssdContent[i][2]), int(ssdContent[i][3])), (255,0,0), 3)
-		img = cv.rectangle(img,(int(yolo4Content[i][0]), int(yolo4Content[i][1])), (int(yolo4Content[i][2]), int(yolo4Content[i][3])), (0,255,0), 3)
-		img = cv.rectangle(img,(int(gtContent[i][0]), int(gtContent[i][1])), (int(gtContent[i][2]), int(gtContent[i][3])), (0,0,255), 3)
-		cv.imwrite(str(os.getcwd() + output_path + "output_" + (arg.path.split("_")[1]).split(".")[0] +".jpg") ,img)
+		#img = cv.rectangle(img,(int(yolo3Content[i][0]), int(yolo3Content[i][1])), (int(yolo3Content[i][2]), int(yolo3Content[i][3])), (255,255,255), 3)
+		#img = cv.rectangle(img,(int(ssdContent[i][0]), int(ssdContent[i][1])), (int(ssdContent[i][2]), int(ssdContent[i][3])), (255,0,0), 3)
+		#img = cv.rectangle(img,(int(yolo4Content[i][0]), int(yolo4Content[i][1])), (int(yolo4Content[i][2]), int(yolo4Content[i][3])), (0,255,0), 3)
+		#img = cv.rectangle(img,(int(gtContent[i][0]), int(gtContent[i][1])), (int(gtContent[i][2]), int(gtContent[i][3])), (0,0,255), 3)
+		#cv.imwrite(str(os.getcwd() + output_path + "output_" + (arg.path.split("_")[1]).split(".")[0] +".jpg") ,img)
 	#Writing co-ordinates in the file
+	print(gtContent)
 	open(ssdFile, "w").close()
 	ssd = open(ssdFile, "w")
 	yolo3 = open(yolo3File,"w")

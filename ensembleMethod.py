@@ -10,6 +10,12 @@ arg = parser.parse_args()
 input_path = "/inputs/"
 output_path = "/outputs/"
 
+predictionFile = os.getcwd() + "/pred.txt"
+pred = open(predictionFile, "a")
+
+def writeFile(item,file) :
+	file.write(str(item) + "\t")
+
 def readFile(model) :
 		content = ""
 		cont = []
@@ -45,6 +51,7 @@ def printGroundTruth(mstMatrix,gt) :
 		sum.append(element)
 	for i in range(0, len(sum)) :
 		print("The MST for the model", dict[i]," is = ", sum[i])
+		writeFile(sum[i],pred)
 	for i in sum :
 		print("The minimum amongst all is ",min(sum),"\n")
 		if(sum.index(min(sum)) < len(dict)) :
@@ -65,6 +72,36 @@ def MST(gt, model) :
 	else :
 		print("Not valid input")
 	return sum
+
+def convert2d(array) :
+	minArray = []
+	k=-1
+	for i in range(0, len(array)) :
+		if i%4 == 0 :
+			minArray.append([])
+			k=k+1
+			minArray[k].append(array[i])
+		else :
+			minArray[k].append(array[i])
+	return minArray
+
+def drawBounding(bestMST, modelMST, img, gtContent, indexImage) :
+	#Drawing bounding box co-ordinates
+	best = convert2d(bestMST)
+	gt = convert2d(gtContent)
+	model = convert2d(modelMST)
+	for i in range(0, len(best)) :
+		#cv follows (b,g,r)
+		img = cv.rectangle(img,(int(best[i][0]), int(best[i][1])), (int(best[i][2]), int(best[i][3])), (97,30,30), 3)
+		img = cv.rectangle(img,(int(gt[i][0]), int(gt[i][1])), (int(gt[i][2]), int(gt[i][3])), (0,0,0), 3)
+		if indexImage == 0:
+			img = cv.rectangle(img,(int(model[i][0]), int(model[i][1])), (int(model[i][2]), int(model[i][3])), (255,0,0), 3)
+		if indexImage == 1:
+			img = cv.rectangle(img,(int(model[i][0]), int(model[i][1])), (int(model[i][2]), int(model[i][3])), (0,255,0), 3)
+		if indexImage == 2:
+			img = cv.rectangle(img,(int(model[i][0]), int(model[i][1])), (int(model[i][2]), int(model[i][3])), (0,0,255), 3)
+		cv.imwrite(str(os.getcwd() + output_path + "output_min_" + (arg.path.split("_")[1]).split(".")[0]+"_"+str(indexImage)+".jpg") ,img)
+		print(output_path + "output_min_")
 
 def main() :
 	img = cv.imread(os.getcwd() + input_path + arg.path)
@@ -122,23 +159,21 @@ def main() :
 	matrix = printMatrix(enMed)
 	print(matrix,"\n")
 	mstMatrix = [yolo3Content, ssdContent, yolo4Content, enMax, enMin, enAvg, enAvg1, enMed]
+
 	minimumModel, minIndex = printGroundTruth(mstMatrix,gtContent)
 	print("The Optimized model is", minimumModel)
-	minArray = []
-	k=-1
-	for i in range(0, len(mstMatrix[minIndex])) :
-		if i%4 == 0 :
-			minArray.append([])
-			k=k+1
-			minArray[k].append(mstMatrix[minIndex][i])
+	pred.write("\n")
+	for i in range(0,3) :
+		img = cv.imread(os.getcwd() + input_path + arg.path)
+		if os.path.exists(str(os.getcwd()) + output_path) :
+			drawBounding(mstMatrix[minIndex],mstMatrix[i], img, gtContent,i)
 		else :
-			minArray[k].append(mstMatrix[minIndex][i])
-
-	#Drawing bounding box co-ordinates
-	for i in range(0, len(minArray)) :
-		#cv follows (b,g,r)
-		img = cv.rectangle(img,(int(minArray[i][0]), int(minArray[i][1])), (int(minArray[i][2]), int(minArray[i][3])), (0,0,0), 3)
-		cv.imwrite(str(os.getcwd() + output_path + "output_min_" + (arg.path.split("_")[1]).split(".")[0] +".jpg") ,img)
+			try :
+				os.mkdir(str(os.getcwd()) + output_path)
+				drawBounding(mstMatrix[minIndex],mstMatrix[i], img, gtContent,i)
+			except :
+				print("Creation of outputs folder cannot be done. Manually create a directory 'outputs'")
+				break	
 
 if __name__ == "__main__":
     main()
