@@ -52,7 +52,7 @@ run_ensemble_detection() {
 
 echo "Starting Ensemble Detection Method"
 retrieve_path 
-
+start_time=`date +%T`
 for file in $Working_Directory/inputs/*; 
         do
                 echo "$(basename "$file")"
@@ -65,5 +65,7 @@ for file in $Working_Directory/inputs/*;
                 #python combiningFormat.py --path "$(basename "$file")"
                 run_ensemble_detection "$(basename "$file")" 
         done
-
+end_time=`date +%T`
+runtime=$((end_time-start_time))
+echo "Execution Time" $runtime
 
