@@ -46,7 +46,7 @@ def compare(array,best,point) :
 
 
 def printTwo(arrayOne, arrayTwo, arrayThree) :
-	print("\n" , arrayOne , "\n" , arrayTwo , "\n" , arrayThree)
+	print("\nYOLOv3 : " , arrayOne , "\n SSD : " , arrayTwo , "\n YOLOv4 : " , arrayThree)
 
 def sort(array) :
 	if len(array) > 1 :
@@ -108,7 +108,8 @@ def main() :
 	yolo4Content = readFile(yolo4)
 	gtContent = readFile(gt)
 	#removing empty array elements like [[],[]]
-	print(yolo3Content)
+	print("Printing the elements read from the file \n")
+	printTwo(yolo3Content,ssdContent,yolo4Content)
 	yolo3Content = trailingZeros(yolo3Content)
 	ssdContent = trailingZeros(ssdContent)
 	yolo4C = trailingZeros(yolo4Content)
@@ -118,6 +119,7 @@ def main() :
 	ssdContent = sort(ssdContent)
 	yolo4Content = sort(yolo4Content)
 	gtContent = sort(gtContent)
+	print("Printing the Sorted elements \n")
 	printTwo(yolo3Content,ssdContent,yolo4Content)
 	minLen = min(min(len(yolo3Content),len(ssdContent)),len(yolo4Content))
 	
@@ -133,8 +135,9 @@ def main() :
 		yolo4Content = removeLines(minLen, yolo4Content, yolo3Content)
 		ssdContent = removeLines(minLen, ssdContent, yolo3Content)
 	
-	print("\n", gtContent, "\n")
+	print("\nGround Truth is : ", gtContent, "\n")
 	#change to (x,y) and (x1,y1) - diagonal co-ordinates
+	print("Printing the processed elements")
 	printTwo(yolo3Content,ssdContent,yolo4Content)
 	#gtContent = format(gtContent,height,width)
 	gtContent = removeLines(minLen, gtContent, ssdContent)
@@ -146,7 +149,7 @@ def main() :
 		#img = cv.rectangle(img,(int(gtContent[i][0]), int(gtContent[i][1])), (int(gtContent[i][2]), int(gtContent[i][3])), (0,0,255), 3)
 		#cv.imwrite(str(os.getcwd() + output_path + "output_" + (arg.path.split("_")[1]).split(".")[0] +".jpg") ,img)
 	#Writing co-ordinates in the file
-	print(gtContent)
+	print("\nGround Truth after processing is : ", gtContent, "\n")
 	open(ssdFile, "w").close()
 	ssd = open(ssdFile, "w")
 	yolo3 = open(yolo3File,"w")

@@ -50,7 +50,7 @@ def printGroundTruth(mstMatrix,gt) :
 		element = MST(gt, mstMatrix[i])
 		sum.append(element)
 	for i in range(0, len(sum)) :
-		print("The MST for the model", dict[i]," is = ", sum[i])
+		print("The RMSE for the model", dict[i]," is = ", sum[i])
 		writeFile(sum[i],pred)
 	for i in sum :
 		print("The minimum amongst all is ",min(sum),"\n")
@@ -66,7 +66,8 @@ def MST(gt, model) :
 	if len(gt) == 1:
 		print("Error : Check the ground labels")
 	for i in range(0,len(gt)-3) :
-		sum = ((math.sqrt((float(gt[i]) - float(model[i]))**2 + (float(gt[i+1]) - float(model[i+1]))**2) + math.sqrt((float(gt[i+2]) - float(model[i+2]))**2 + (float(gt[i+3]) - float(model[i+3]))**2))/2)**2
+		sum += ((math.sqrt((float(gt[i]) - float(model[i]))**2 + (float(gt[i+1]) - float(model[i+1]))**2) + math.sqrt((float(gt[i+2]) - float(model[i+2]))**2 + (float(gt[i+3]) - float(model[i+3]))**2))/2)**2
+		i = i+4
 	if len(gt)!=0 :
 		sum = math.sqrt(sum/(len(gt)/4))	
 	else :
@@ -159,9 +160,9 @@ def main() :
 	matrix = printMatrix(enMed)
 	print(matrix,"\n")
 	mstMatrix = [yolo3Content, ssdContent, yolo4Content, enMax, enMin, enAvg, enAvg1, enMed]
-
 	minimumModel, minIndex = printGroundTruth(mstMatrix,gtContent)
 	print("The Optimized model is", minimumModel)
+	pred.write("\t" + minimumModel)
 	pred.write("\n")
 	for i in range(0,3) :
 		img = cv.imread(os.getcwd() + input_path + arg.path)
