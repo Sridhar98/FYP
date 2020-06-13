@@ -5,7 +5,7 @@ Object detection is an important computer vision problem with a multitude of app
 ![alt text](flow.png)
 
 ### Installation Steps 
-Environment : Ubuntu 18.04 LTS <br>
+Environment : Ubuntu 16.04 LTS <br>
 Dataset : PASCALVOC 2012(Install it from the http://host.robots.ox.ac.uk/pascal/VOC/ <br>
 1.) Install and set up YOLOv3, YOLOv4 and SSD models from their respective official implementations. <br>
 2.) Go in the CombiningFormat.py and EnsembleMethod.py and make changes to the respective paths you wish to store your results in. <br>
@@ -16,7 +16,7 @@ If the bash file has any issues with the permission access, do chmod +x run_syst
 ### Results 
 ![alt text](FYP_Histogram_EnsemblevsModels_performance.jpeg) <br>
 ![alt text](Pie_Chart.jpg) <br>
-Results have been obtained for 1102 images of PASCAL-VOC 2012 datase.<br>
+Results have been obtained for 1102 images of PASCAL-VOC 2012 dataset.<br>
 The figure above shows that **ensembling methods** cumulatively outperforms all the individual models taken into consideration. The ensembling methods, collectively constitutes for **around 40%** of the cases, implying that the individual models fail for at least 40% or more, or in other words, there is a chance of obtaining more accurate detections - i.e. for individual models, **YOLOv4 has 73.3%, YOLOv3 - 85.65% and SSD - 81.25% cases where they fail to detect the objects accurately** and there is a scope of improvement if the advantages of all the models are aggregated.<br>
 
 From the above obtained results, it is evident that no one particular baseline method - YOLOv3, YOLOv4, SSD individually performs optimal detection for the majority of cases. This necessitates the need for an ensembling technique. The ensemble methods capture the advantages of each of these baselines models and combines them together statistically in order to obtain a more accurate detection results. One can interpret each of the ensembling methods conceptually. MAX can be seen as expanding the bounding box, MIN shrinks the box. AVG(MIN,MAX) is a mid-point method that acts as a trade-off between MIN and MAX, giving a more nuanced result.<br>
