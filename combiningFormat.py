@@ -11,7 +11,7 @@ arg = parser.parse_args()
 def readFile(model) :
 		content = ""
 		cont = []
-		k=-1;
+		k=-1
 		for line in model :
 			if len(line.strip()) != 0 :
 				k = k+1
@@ -38,7 +38,7 @@ def compare(array,best,point) :
 	minimum = abs(array[index][0] - best[point][0]) + abs(array[index][1] - best[point][1]) + abs(array[index][2] - best[point][2]) + abs(array[index][3] - best[point][3])
 	for index in range(point+1,len(array)) :
 		x = abs(array[index][0] - best[point][0]) + abs(array[index][1] - best[point][1]) + abs(array[index][2] - best[point][2]) + abs(array[index][3] - best[point][3])
-		if(minimum < x) :
+		if minimum < x :
 			return index-1
 		else :
 			minimum = min(minimum,x)
@@ -59,7 +59,7 @@ def removeLines(minLen,array,best) :
 			break
 		index = compare(array,best,x)
 		if index == -1 :
-			break;
+			break
 		elif x!=index :
 			for i in range(x,index) :
 				array.pop(i)
@@ -68,7 +68,7 @@ def removeLines(minLen,array,best) :
 			array.pop(len(array)-1)
 	return array
 
-def format(array,height,width) :
+def format1(array,height,width) :
 	
 	for i in range(0, len(array)) :
 		array[i][0] = array[i][0] * width

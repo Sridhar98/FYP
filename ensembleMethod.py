@@ -41,7 +41,7 @@ def printMatrix(enMax) :
 			matrix.append([])
 			k=k+1
 			matrix[k].append(enMax[i])
-	return matrix;
+	return matrix
 
 def printGroundTruth(mstMatrix,gt) :
 	dict = ["YOLOv3","SSD","YOLOv4","MAX","MIN","AVG","AVG(MAX,MIN)","MEDIAN"]
@@ -62,17 +62,17 @@ def printGroundTruth(mstMatrix,gt) :
 	return dict[sum.index(min(sum))], sum.index(min(sum))
 	
 def MST(gt, model) :
-	sum=0
+	sumMst=0
 	if len(gt) == 1:
 		print("Error : Check the ground labels")
 	for i in range(0,len(gt)-3) :
-		sum += ((math.sqrt((float(gt[i]) - float(model[i]))**2 + (float(gt[i+1]) - float(model[i+1]))**2) + math.sqrt((float(gt[i+2]) - float(model[i+2]))**2 + (float(gt[i+3]) - float(model[i+3]))**2))/2)**2
+		sumMst += ((math.sqrt((float(gt[i]) - float(model[i]))**2 + (float(gt[i+1]) - float(model[i+1]))**2) + math.sqrt((float(gt[i+2]) - float(model[i+2]))**2 + (float(gt[i+3]) - float(model[i+3]))**2))/2)**2
 		i = i+4
 	if len(gt)!=0 :
-		sum = math.sqrt(sum/(len(gt)/4))	
+		sumMst = math.sqrt(sumMst/(len(gt)/4))	
 	else :
 		print("Not valid input")
-	return sum
+	return sumMst
 
 def convert2d(array) :
 	minArray = []
@@ -102,10 +102,10 @@ def drawBounding(bestMST, modelMST, img, gtContent, indexImage) :
 		if indexImage == 2:
 			img = cv.rectangle(img,(int(model[i][0]), int(model[i][1])), (int(model[i][2]), int(model[i][3])), (0,0,255), 3)
 		cv.imwrite(str(os.getcwd() + output_path + "output_min_" + (arg.path.split("_")[1]).split(".")[0]+"_"+str(indexImage)+".jpg") ,img)
-		print(output_path + "output_min_")
 
 def main() :
 	img = cv.imread(os.getcwd() + input_path + arg.path)
+	print(img)
 	ssdFile = os.getcwd() + str('/'+arg.path.split('.')[0]+"_ssd.txt")
 	yolo3File = os.getcwd() + str('/'+arg.path.split('.')[0]+"_yolo3.txt")
 	yolo4File = os.getcwd() + str('/'+arg.path.split('.')[0]+"_yolo4.txt")
@@ -174,6 +174,8 @@ def main() :
 				drawBounding(mstMatrix[minIndex],mstMatrix[i], img, gtContent,i)
 			except :
 				print("Creation of outputs folder cannot be done. Manually create a directory 'outputs'")
+				break
+			finally:
 				break	
 
 if __name__ == "__main__":
