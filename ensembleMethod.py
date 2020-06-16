@@ -174,8 +174,6 @@ def main() :
 				drawBounding(mstMatrix[minIndex],mstMatrix[i], img, gtContent,i)
 			except :
 				print("Creation of outputs folder cannot be done. Manually create a directory 'outputs'")
-				break
-			finally:
 				break	
 
 if __name__ == "__main__":
