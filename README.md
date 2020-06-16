@@ -27,3 +27,4 @@ The figure illustrates the plot of RMS value vs the test images for every model 
 , we can see that **optimal model for most of the images coincides with the ensemble model, proving the need for ensemble for more accurate detections**.
 <br><br>
 ##### In case of any doubts, please feel free to reach out to us at : btpnitt@gmail.com
+##### Contributors of the Project are : Shubhendra Pal Singhal(https://www.linkedin.com/in/shubhendra-pal-singhal-7378a9131/), Sridhar Ragupathi, Swetha Sivakumar.
